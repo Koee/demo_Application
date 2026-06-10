@@ -1,0 +1,23 @@
+{
+  "name": "demo_application",
+  "version": "1.0.0",
+  "description": "Playwright desktop automation demo for Windows applications.",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "report": "playwright show-report --port 0",
+    "test:headed": "playwright test --headed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/demo_Application.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/demo_Application/issues"
+  },
+  "homepage": "https://github.com/your-org/demo_Application#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.54.0",
+    "typescript": "^5.8.3"
+  }
+}

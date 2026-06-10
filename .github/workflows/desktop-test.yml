@@ -1,0 +1,40 @@
+name: Windows Desktop Automation Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  desktop-test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Restore .NET dependencies
+        run: dotnet restore DesktopAutomation/DesktopAutomation.csproj
+
+      - name: Run Playwright orchestration test
+        run: npm test
+
+      - name: Upload Playwright HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
