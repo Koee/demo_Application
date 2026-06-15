@@ -6,6 +6,7 @@ namespace DesktopAutomation.Components;
 
 internal static class WindowFinder
 {
+    // Waits until the launched app exposes a main window, then returns it for the app flow.
     public static Window WaitForMainWindow(
         FlaUIApplication app,
         UIA3Automation automation,

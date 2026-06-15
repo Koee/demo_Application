@@ -5,6 +5,7 @@ import {
   notepadTextFilePath
 } from '../fixtures/paths';
 
+// Runs the .NET/FlaUI automation process and passes the runtime paths/config from Playwright.
 export function runDesktopAutomation(): string {
   return execFileSync('dotnet', ['run', '--project', desktopProjectPath], {
     encoding: 'utf-8',

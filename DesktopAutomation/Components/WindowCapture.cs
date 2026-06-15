@@ -6,6 +6,7 @@ namespace DesktopAutomation.Components;
 
 internal static class WindowCapture
 {
+    // Captures the visible bounds of a desktop window into a PNG artifact.
     public static void Capture(Window window, string pngPath)
     {
         var bounds = window.BoundingRectangle;

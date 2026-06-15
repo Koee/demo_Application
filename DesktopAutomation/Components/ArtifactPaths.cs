@@ -2,6 +2,7 @@ namespace DesktopAutomation.Components;
 
 internal sealed class ArtifactPaths
 {
+    // Builds the desktop artifact folder set from one root path: pass, false, work, and log.
     private ArtifactPaths(string outputRoot)
     {
         OutputRoot = outputRoot;
@@ -21,6 +22,7 @@ internal sealed class ArtifactPaths
 
     public string LogPath { get; }
 
+    // Clears previous desktop outputs so a new run cannot accidentally reuse old screenshots/logs.
     public void CleanOutputRoot()
     {
         if (Directory.Exists(OutputRoot))
@@ -31,6 +33,7 @@ internal sealed class ArtifactPaths
         Directory.CreateDirectory(OutputRoot);
     }
 
+    // Removes temporary files created while the app is running; pass/fail artifacts stay untouched.
     public void CleanWorkDir()
     {
         if (Directory.Exists(WorkDir))
@@ -39,6 +42,7 @@ internal sealed class ArtifactPaths
         }
     }
 
+    // Reads TEST_RESULTS_DIR from Playwright, with a local fallback for direct dotnet runs.
     public static ArtifactPaths FromEnvironment()
     {
         var outputRoot = Environment.GetEnvironmentVariable("TEST_RESULTS_DIR")

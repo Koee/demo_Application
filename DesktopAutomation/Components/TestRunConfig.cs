@@ -24,6 +24,7 @@ internal sealed class TestRunConfig
 
     public string ArtifactPrefix { get; }
 
+    // Reads runtime knobs passed by Playwright or CI and normalizes them for the desktop flow.
     public static TestRunConfig FromEnvironment()
     {
         var scenarioName = ReadValue("SCENARIO_NAME", DefaultScenarioName);
@@ -36,6 +37,7 @@ internal sealed class TestRunConfig
         return new TestRunConfig(scenarioName, environmentName, textEntryMaxAttempts);
     }
 
+    // Reads a string environment variable while keeping a predictable fallback for local runs.
     private static string ReadValue(string variableName, string fallback)
     {
         var value = Environment.GetEnvironmentVariable(variableName);
@@ -45,6 +47,7 @@ internal sealed class TestRunConfig
             : value.Trim();
     }
 
+    // Converts scenario names into file-safe artifact prefixes.
     private static string CreateArtifactPrefix(string scenarioName)
     {
         var normalized = Regex.Replace(scenarioName.Trim().ToLowerInvariant(), "[^a-z0-9]+", "-").Trim('-');
