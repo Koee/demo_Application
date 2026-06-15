@@ -1,5 +1,6 @@
 import path from 'path';
 
+// Centralizes repo-relative paths so tests and runners do not depend on a local absolute path.
 export const repoRoot = path.resolve(__dirname, '../../..');
 export const testResultsRoot = path.join(repoRoot, 'test-results');
 

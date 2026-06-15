@@ -6,6 +6,7 @@ namespace DesktopAutomation.Components;
 
 internal static class TextInput
 {
+    // Focuses the text editor and replaces its content using clipboard paste for stable desktop input.
     public static void ReplaceTextInEditor(Window window, string text)
     {
         WindowActivator.BringToFront(window);
@@ -31,6 +32,7 @@ internal static class TextInput
         SendKeys.Flush();
     }
 
+    // Locates the main editable area in apps like Notepad using common UI Automation control types.
     private static AutomationElement? FindEditor(Window window)
     {
         var conditionFactory = window.Automation.ConditionFactory;

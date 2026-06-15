@@ -11,6 +11,7 @@ internal sealed class NotepadAutomation
 {
     public Window? CurrentWindow { get; private set; }
 
+    // App flow: open Notepad with a temp file, enter test data, verify the saved file, then publish pass artifacts.
     public void Run(ArtifactPaths artifacts, TestRunConfig config)
     {
         var text = TestDataReader.ReadNotepadText();
@@ -19,6 +20,7 @@ internal sealed class NotepadAutomation
         var txtPath = Path.Combine(artifacts.WorkDir, $"{config.ArtifactPrefix}-output.txt");
         File.WriteAllText(txtPath, string.Empty);
 
+        // UIA3Automation is the FlaUI backend used to find and interact with Windows UI elements.
         using var automation = new UIA3Automation();
 
         AutomationLogger.Step("STEP 1: Open Notepad");
@@ -31,6 +33,7 @@ internal sealed class NotepadAutomation
         EnterAndVerifyText(txtPath, text, config);
 
         AutomationLogger.Step("STEP 4: Capture Notepad screenshot");
+        // Pass artifacts are created only after the saved file has been verified.
         WindowActivator.BringToFront(CurrentWindow);
         Thread.Sleep(500);
 
@@ -44,6 +47,7 @@ internal sealed class NotepadAutomation
         AutomationLogger.Info($"Saved text file: {outputPath}");
     }
 
+    // Retry loop for the flaky part of desktop UI: focus editor, paste text, save, then verify the file content.
     private void EnterAndVerifyText(string txtPath, string expectedText, TestRunConfig config)
     {
         for (var attempt = 1; attempt <= config.TextEntryMaxAttempts; attempt++)
@@ -76,6 +80,7 @@ internal sealed class NotepadAutomation
             $"Notepad did not save expected text after {config.TextEntryMaxAttempts} attempts. Expected '{expectedText}', actual '{ReadSavedText(txtPath)}'.");
     }
 
+    // Sends Ctrl+S to persist the current Notepad buffer to the file opened at launch.
     private static void SaveFile()
     {
         Keyboard.Press(VirtualKeyShort.CONTROL);
@@ -84,6 +89,7 @@ internal sealed class NotepadAutomation
         Keyboard.Release(VirtualKeyShort.CONTROL);
     }
 
+    // Reads the saved temp file as the source of truth for pass/fail verification.
     private static string ReadSavedText(string txtPath)
     {
         return File.Exists(txtPath)

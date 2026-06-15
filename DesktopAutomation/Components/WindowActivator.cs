@@ -8,6 +8,7 @@ internal static class WindowActivator
     private const int Restore = 9;
     private const int Show = 5;
 
+    // Restores and focuses the target window before keyboard input or screenshot capture.
     public static void BringToFront(Window window)
     {
         var handle = new IntPtr(window.Properties.NativeWindowHandle.Value);

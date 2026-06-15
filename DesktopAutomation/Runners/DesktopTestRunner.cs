@@ -5,6 +5,7 @@ namespace DesktopAutomation.Runners;
 
 internal static class DesktopTestRunner
 {
+    // Main desktop lifecycle: prepare artifacts/config, run the app flow, and convert failures into debuggable outputs.
     public static int Run()
     {
         var artifacts = ArtifactPaths.FromEnvironment();
@@ -13,6 +14,7 @@ internal static class DesktopTestRunner
 
         try
         {
+            // Start each run from a clean desktop output folder so old artifacts cannot hide the real result.
             artifacts.CleanOutputRoot();
             AutomationLogger.Configure(artifacts.LogPath);
             AutomationLogger.Info($"Artifact root: {artifacts.OutputRoot}");
@@ -26,6 +28,7 @@ internal static class DesktopTestRunner
                 return 1;
             }
 
+            // Remove stale app instances before starting the scenario to avoid focusing the wrong window.
             ProcessManager.KillProcessesByName("notepad");
 
             notepad.Run(artifacts, config);
@@ -35,6 +38,7 @@ internal static class DesktopTestRunner
         }
         catch (Exception ex)
         {
+            // Failure path: always save the exception, then try to capture the current desktop state.
             Directory.CreateDirectory(artifacts.FalseDir);
             File.WriteAllText(Path.Combine(artifacts.FalseDir, "error.txt"), ex.ToString());
 
@@ -49,11 +53,13 @@ internal static class DesktopTestRunner
         }
         finally
         {
+            // Cleanup should run for both pass and fail, but must not replace the real test outcome.
             ProcessManager.KillProcessesByName("notepad");
             TryCleanWorkDir(artifacts);
         }
     }
 
+    // Best-effort failure screenshot for debugging UI state without masking the original exception.
     private static void TryCaptureFailureScreenshot(FlaUI.Core.AutomationElements.Window window, ArtifactPaths artifacts)
     {
         try
@@ -66,6 +72,7 @@ internal static class DesktopTestRunner
         }
     }
 
+    // Best-effort cleanup for temporary work files created during the desktop flow.
     private static void TryCleanWorkDir(ArtifactPaths artifacts)
     {
         try
